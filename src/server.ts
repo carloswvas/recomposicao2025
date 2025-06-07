@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import Fastify from 'fastify'
+import cors from '@fastify/cors';
 import { eq } from 'drizzle-orm';
 import { z } from "zod/v4";
 import { db } from './db';
@@ -20,6 +21,12 @@ const idUserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>;
 export type idUser = z.infer<typeof idUserSchema>;
+
+await fastify.register(cors, {
+  origin: '*',
+  methods: ['GET', 'POST', 'DELETE'],
+  credentials: true
+})
 
 fastify.get('/users', async (request, reply) => {
   const selectAll = await db.select().from(users)
